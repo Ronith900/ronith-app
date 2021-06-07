@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Counter from "./counter";
+import axios from'axios'
 
 class Counters extends Component {
   state = {
@@ -9,7 +10,15 @@ class Counters extends Component {
       { id: 3, value: 0 },
       { id: 4, value: 0 },
     ],
+    snippets : []
   };
+
+    async componentDidMount(){
+      const snippets = await axios.get("http://localhost:8000/api/snippets/").then(result => result.data)
+      console.log(snippets)
+      this.setState({snippets})
+    }
+
 
   handleIncrement = (counter) => {
     const { counters } = this.state;
@@ -36,6 +45,7 @@ class Counters extends Component {
   render() {
     return (
       <div>
+        <h3>There are a total of {this.state.snippets.length} snippets</h3>
         <button className="btn btn-primary m-2" onClick={this.handleReset}>
           Reset all
         </button>
