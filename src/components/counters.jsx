@@ -1,7 +1,14 @@
 import React, { Component } from "react";
 import Counter from "./counter";
 import axios from'axios'
-
+import DateFnsUtils from '@date-io/date-fns';
+import Grid from '@material-ui/core/Grid';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
+import TextField from "@material-ui/core/TextField"
 class Counters extends Component {
   state = {
     counters: [
@@ -10,14 +17,10 @@ class Counters extends Component {
       { id: 3, value: 0 },
       { id: 4, value: 0 },
     ],
-    snippets : []
+    snippets : [],
+    date : new Date()
   };
 
-    async componentDidMount(){
-      const snippets = await axios.get("http://localhost:8000/api/snippets/").then(result => result.data)
-      console.log(snippets)
-      this.setState({snippets})
-    }
 
 
   handleIncrement = (counter) => {
@@ -27,6 +30,13 @@ class Counters extends Component {
     counters[counterIndex] = counter;
     this.setState({ counters });
   };
+
+  handleDateChangeTime = (date) => {
+    this.setState({date})
+    console.log(this.state.date)
+  }
+
+  
 
   handleReset = () => {
     const counters = this.state.counters.map((counter) => {
@@ -45,6 +55,20 @@ class Counters extends Component {
   render() {
     return (
       <div>
+    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+      <Grid>
+        <KeyboardTimePicker
+          margin="normal"
+          id="time-picker"
+          label="Time picker"
+          value={this.state.date}
+          onChange={date => this.handleDateChangeTime(date)}
+          KeyboardButtonProps={{
+            'aria-label': 'change time',
+          }}
+        />
+      </Grid>
+    </MuiPickersUtilsProvider>
         <h3>There are a total of {this.state.snippets.length} snippets</h3>
         <button className="btn btn-primary m-2" onClick={this.handleReset}>
           Reset all
